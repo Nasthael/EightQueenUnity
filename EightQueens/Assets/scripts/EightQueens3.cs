@@ -5,8 +5,17 @@ using UnityEngine;
 public class EightQueens3 : MonoBehaviour {
 
     const int N = 8;
+
+    static Dictionary<int, List<Coordonnees>> dictSoluces = new Dictionary<int, List<Coordonnees>>();
+    public struct Coordonnees
+    {
+        public int row;
+        public int col;
+    }
+
     private void Start()
     {
+        List<Coordonnees>listQueen = new List<Coordonnees>();
         Debug.Log("initialization of the eight queen solver");
         int count = 0;
         int[,] board = new int[N, N];
@@ -16,9 +25,20 @@ public class EightQueens3 : MonoBehaviour {
         {
             for (int j = 0; j < N; j++)
             {
-                board[i, j] = 0;
+                board[i, j] = 0;//on a un plateau de 8 par 8 rempli de 0
             }
         }
+
+
+
+
+
+
+
+
+
+
+
 
         //Initialize the pointer array
         int[] pointer = new int[N];
@@ -27,54 +47,67 @@ public class EightQueens3 : MonoBehaviour {
             pointer[i] = -1;
         }
 
+
+
+
+
+
+
+
         //Implementation of Back Tracking Algorithm
         for (int j = 0; ; )
         {
-            pointer[j]++;
+
+            pointer[j]++;//pointer[0]=-1 donc ici ca donne 0 ?
+            Debug.Log("pointer[0] : " +pointer[0]);
+            
+
             //Reset and move one column back 
             if (pointer[j] == N)
             {
                 board[pointer[j] - 1, j] = 0;
+                listQueen.RemoveAt(j);
                 pointer[j] = -1;
                 j--;
 
                 if (j == -1)
                 {
                    Debug.Log("All possible configurations have been examined...");
-                    Debug.Log(j);
-                    break;
+                   foreach (KeyValuePair<int, List<Coordonnees>> entry in dictSoluces)
+                   {
+                        for (int i = 0; i<entry.Value.Count;i++)
+                        {
+                            print("col : "+entry.Value[i].col+ "row : " + entry.Value[i].col);
+                        }
+                   }
+                   break;
                 }
             }
             else
             {
-                board[pointer[j], j] = 1;
-                if (pointer[j] != 0)
+                board[pointer[j], j] = 1;//mettre une 
+                Coordonnees coordinates = new Coordonnees() { row = pointer[j], col = j };
+                listQueen.Add(coordinates);
+                Debug.Log("listeQueen :" + listQueen.Count);
+                foreach(Coordonnees elem in listQueen)
+                {
+                    Debug.Log("col : "+elem.col+"row : "+elem.row);
+                }
+
+                if (pointer[j] != 0)//tous les cas sauf le premier
                 {
                     board[pointer[j] - 1, j] = 0;
+                    listQueen.RemoveAt(j);
                 }
+
                 if (SolutionCheck(board))
                 {
                     j++;//move to next column
                     if (j == N)
-                    {
-                        Debug.Log("Testing values for queen placed at the top left corner, then at (0,1) and at (3,1)");
-                        Debug.Log(N);
-                        Debug.Log("Board [0;0] :"+board[0,0]);
-                        Debug.Log("Board [0;1] :" + board[0, 1]);
-                        Debug.Log("Board [3;1] :" + board[3, 1]);
-
+                    {              
                         j--;
                         count++;
-                        Debug.Log("Solution" + count.ToString() + ":");
-                        Debug.Log(board);
-                        for (int p = 0; p < N; p++)
-                        {
-                            for (int q = 0; q < N; q++)
-                            {
-                                Debug.Log(board[p, q] + " ");
-                            }
-                            Debug.Log("");
-                        }
+                        dictSoluces.Add(count, listQueen);          
                     }
                 }
             }
@@ -90,8 +123,9 @@ public class EightQueens3 : MonoBehaviour {
             for (int j = 0; j < N; j++)
             {
                 sum = sum + board[i, j];
+                System.Console.WriteLine("Sum pour case (" + i + ";" + j +") en lignes =" + sum);
             }
-            if (sum > 1)
+            if (sum > 1)//s'il check une valeur de 1, une dame, ce n'est pas possible
             {
                 return false;
             }
@@ -101,7 +135,7 @@ public class EightQueens3 : MonoBehaviour {
         for (int i = 0, j = N - 2; j >= 0; j--)
         {
             int sum = 0;
-            for (int p = i, q = j; q < N; p++, q++)
+            for (int p = i, q = j; q < N; p++, q++)//dafuck ?!
             {
                 sum = sum + board[p, q];
             }
