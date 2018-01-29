@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class BoardManager : MonoBehaviour {
-
     //Tiles const
     private const float TILE_SIZE = 1.0f; 
     private const float TILE_OFFSET = 0.5f;
@@ -14,49 +14,34 @@ public class BoardManager : MonoBehaviour {
 
     //Queens
     public GameObject queen;
-    public List<GameObject> listeQueen= new List<GameObject>();
+    public static List<GameObject> listeQueen= new List<GameObject>();
 
+    //UI
+    public static Button button;
+    public List<Button> listButtons;
 
     private void Start()
     {
+        EightQueenFinal.Main();
+//spawn de toutes les reines en invisibles
         for (int i =0; i<8; i++)
         {
             for (int j = 0; j<8; j++)
             {
-                SpawnQueens(spawnPositionHelper(i, j));
+                SpawnQueens(SpawnPositionHelper(i, j));
             }
         }
         foreach (GameObject queen in listeQueen)
         {
             queen.GetComponent<MeshRenderer>().enabled = false;
         }
-        //LANSER L'ALGO ICI
+        Debug.Log(listeQueen.Count);
     }
 
     private void Update()
     {
         DrawBoard();
-        UpdateSelection();
-    }
-
-    //Allows to discriminate a tile from the board
-    private void UpdateSelection()
-    {
-        if (!Camera.main)
-        {       
-            return;
-        }
-        RaycastHit hit;
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 25.0f, LayerMask.GetMask("BordPlane")))
-        {
-            selectionX = (int)hit.point.x;
-            selectionY = (int)hit.point.z;
-        }
-        else
-        {
-            selectionX = -1;
-            selectionY = -1;
-}
+        //UpdateSelection();
     }
 
     //Draws the grid of tiles
@@ -84,6 +69,8 @@ public class BoardManager : MonoBehaviour {
     }
 
     //instanciate queens 
+
+
     private void SpawnQueens(Vector3 position)
     {
         GameObject tmp = Instantiate(queen, position, Quaternion.identity) as GameObject;
@@ -92,7 +79,7 @@ public class BoardManager : MonoBehaviour {
     }
 
     //centers the queen's position to it's tile
-    private Vector3 spawnPositionHelper(int x, int y)
+    private Vector3 SpawnPositionHelper(int x, int y)
     {
         Vector3 origin = Vector3.zero;
         origin.x += (TILE_SIZE * x) + TILE_OFFSET;
