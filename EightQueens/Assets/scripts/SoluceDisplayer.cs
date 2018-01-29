@@ -26,11 +26,6 @@ public class SoluceDisplayer : MonoBehaviour
         {
             foreach (GameObject queen in BoardManager.listeQueen)
             {
-                Debug.Log(queen);
-            }
-
-            foreach (GameObject queen in BoardManager.listeQueen)
-            {
                 if (queen.transform.position.x - 0.5 == item.col && queen.transform.position.z - 0.5 == item.row)
                 {
                     queen.GetComponent<MeshRenderer>().enabled = true;

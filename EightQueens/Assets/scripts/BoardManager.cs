@@ -35,7 +35,6 @@ public class BoardManager : MonoBehaviour {
         {
             queen.GetComponent<MeshRenderer>().enabled = false;
         }
-        Debug.Log(listeQueen.Count);
     }
 
     private void Update()
